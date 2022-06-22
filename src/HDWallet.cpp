@@ -172,7 +172,9 @@ std::string HDWallet::getExtendedPrivateKeyAccount(TWPurpose purpose, TWCoinType
     }
     
     const auto curve = TWCoinTypeCurve(coin);
-    auto derivationPath = TW::DerivationPath({DerivationPathIndex(purpose, true), DerivationPathIndex(coin, true)});
+    const auto path = TW::derivationPath(coin);
+    auto indices = std::vector<DerivationPathIndex>(path.indices.begin(), path.indices.begin() + 2);
+    auto derivationPath = TW::DerivationPath(std::vector<DerivationPathIndex>{path.indices.begin(), path.indices.begin() + 2});
     auto node = getNode(*this, curve, derivationPath);
     auto fingerprintValue = fingerprint(&node, publicKeyHasher(coin));
     hdnode_private_ckd(&node, account + 0x80000000);
@@ -185,7 +187,9 @@ std::string HDWallet::getExtendedPublicKeyAccount(TWPurpose purpose, TWCoinType 
     }
     
     const auto curve = TWCoinTypeCurve(coin);
-    auto derivationPath = TW::DerivationPath({DerivationPathIndex(purpose, true), DerivationPathIndex(coin, true)});
+    const auto path = TW::derivationPath(coin);
+    auto indices = std::vector<DerivationPathIndex>(path.indices.begin(), path.indices.begin() + 2);
+    auto derivationPath = TW::DerivationPath(indices);
     auto node = getNode(*this, curve, derivationPath);
     auto fingerprintValue = fingerprint(&node, publicKeyHasher(coin));
     hdnode_private_ckd(&node, account + 0x80000000);
